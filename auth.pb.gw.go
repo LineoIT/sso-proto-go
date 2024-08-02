@@ -2,11 +2,11 @@
 // source: auth.proto
 
 /*
-Package sso is a reverse proxy.
+Package sso_proto_go is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package sso
+package sso_proto_go
 
 import (
 	"context"
