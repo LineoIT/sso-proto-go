@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.34.2
 // 	protoc        v4.25.1
-// source: auth.proto
+// source: auth.proto-lite
 
 package sso_proto_go
 
