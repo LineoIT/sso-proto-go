@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v4.25.1
-// source: auth.proto-lite
+// source: auth.proto
 
-package sso_proto_go
+package sso_proto_lite_go
 
 import (
 	context "context"
@@ -26,6 +26,8 @@ const (
 	AuthService_ForgotPassword_FullMethodName        = "/sso.AuthService/ForgotPassword"
 	AuthService_ConfirmResetPassword_FullMethodName  = "/sso.AuthService/ConfirmResetPassword"
 	AuthService_ResetPassword_FullMethodName         = "/sso.AuthService/ResetPassword"
+	AuthService_CheckPassword_FullMethodName         = "/sso.AuthService/CheckPassword"
+	AuthService_ChangePassword_FullMethodName        = "/sso.AuthService/ChangePassword"
 	AuthService_CheckEmail_FullMethodName            = "/sso.AuthService/CheckEmail"
 	AuthService_ConfirmEmail_FullMethodName          = "/sso.AuthService/ConfirmEmail"
 	AuthService_EmailLogin_FullMethodName            = "/sso.AuthService/EmailLogin"
@@ -49,6 +51,8 @@ type AuthServiceClient interface {
 	ForgotPassword(ctx context.Context, in *EmailSchema, opts ...grpc.CallOption) (*TimeoutSchema, error)
 	ConfirmResetPassword(ctx context.Context, in *EmailCodeSchema, opts ...grpc.CallOption) (*AccessToken, error)
 	ResetPassword(ctx context.Context, in *PasswordSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CheckPassword(ctx context.Context, in *PasswordSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	ChangePassword(ctx context.Context, in *PasswordSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CheckEmail(ctx context.Context, in *EmailSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ConfirmEmail(ctx context.Context, in *EmailCodeSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	EmailLogin(ctx context.Context, in *EmailPasswordSchema, opts ...grpc.CallOption) (*AccessToken, error)
@@ -124,6 +128,26 @@ func (c *authServiceClient) ResetPassword(ctx context.Context, in *PasswordSchem
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, AuthService_ResetPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) CheckPassword(ctx context.Context, in *PasswordSchema, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AuthService_CheckPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ChangePassword(ctx context.Context, in *PasswordSchema, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AuthService_ChangePassword_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -250,6 +274,8 @@ type AuthServiceServer interface {
 	ForgotPassword(context.Context, *EmailSchema) (*TimeoutSchema, error)
 	ConfirmResetPassword(context.Context, *EmailCodeSchema) (*AccessToken, error)
 	ResetPassword(context.Context, *PasswordSchema) (*emptypb.Empty, error)
+	CheckPassword(context.Context, *PasswordSchema) (*emptypb.Empty, error)
+	ChangePassword(context.Context, *PasswordSchema) (*emptypb.Empty, error)
 	CheckEmail(context.Context, *EmailSchema) (*emptypb.Empty, error)
 	ConfirmEmail(context.Context, *EmailCodeSchema) (*emptypb.Empty, error)
 	EmailLogin(context.Context, *EmailPasswordSchema) (*AccessToken, error)
@@ -288,6 +314,12 @@ func (UnimplementedAuthServiceServer) ConfirmResetPassword(context.Context, *Ema
 }
 func (UnimplementedAuthServiceServer) ResetPassword(context.Context, *PasswordSchema) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResetPassword not implemented")
+}
+func (UnimplementedAuthServiceServer) CheckPassword(context.Context, *PasswordSchema) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckPassword not implemented")
+}
+func (UnimplementedAuthServiceServer) ChangePassword(context.Context, *PasswordSchema) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
 func (UnimplementedAuthServiceServer) CheckEmail(context.Context, *EmailSchema) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckEmail not implemented")
@@ -447,6 +479,42 @@ func _AuthService_ResetPassword_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthServiceServer).ResetPassword(ctx, req.(*PasswordSchema))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_CheckPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PasswordSchema)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CheckPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_CheckPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CheckPassword(ctx, req.(*PasswordSchema))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ChangePassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PasswordSchema)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ChangePassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ChangePassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ChangePassword(ctx, req.(*PasswordSchema))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -681,6 +749,14 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_ResetPassword_Handler,
 		},
 		{
+			MethodName: "CheckPassword",
+			Handler:    _AuthService_CheckPassword_Handler,
+		},
+		{
+			MethodName: "ChangePassword",
+			Handler:    _AuthService_ChangePassword_Handler,
+		},
+		{
 			MethodName: "CheckEmail",
 			Handler:    _AuthService_CheckEmail_Handler,
 		},
@@ -726,5 +802,5 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "auth.proto-lite",
+	Metadata: "auth.proto",
 }
