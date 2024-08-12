@@ -61,7 +61,7 @@ type AuthServiceClient interface {
 	CheckPhoneNumber(ctx context.Context, in *PhoneSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ConfirmPhoneNumber(ctx context.Context, in *PhoneCodeSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	SendSMSConfirmation(ctx context.Context, in *PhoneSMSSchema, opts ...grpc.CallOption) (*TimeoutSchema, error)
-	LogOut(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	LogOut(ctx context.Context, in *LogoutSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeactivateAccount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteAccount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -234,7 +234,7 @@ func (c *authServiceClient) SendSMSConfirmation(ctx context.Context, in *PhoneSM
 	return out, nil
 }
 
-func (c *authServiceClient) LogOut(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *authServiceClient) LogOut(ctx context.Context, in *LogoutSchema, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, AuthService_LogOut_FullMethodName, in, out, cOpts...)
@@ -284,7 +284,7 @@ type AuthServiceServer interface {
 	CheckPhoneNumber(context.Context, *PhoneSchema) (*emptypb.Empty, error)
 	ConfirmPhoneNumber(context.Context, *PhoneCodeSchema) (*emptypb.Empty, error)
 	SendSMSConfirmation(context.Context, *PhoneSMSSchema) (*TimeoutSchema, error)
-	LogOut(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
+	LogOut(context.Context, *LogoutSchema) (*emptypb.Empty, error)
 	DeactivateAccount(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	DeleteAccount(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	mustEmbedUnimplementedAuthServiceServer()
@@ -345,7 +345,7 @@ func (UnimplementedAuthServiceServer) ConfirmPhoneNumber(context.Context, *Phone
 func (UnimplementedAuthServiceServer) SendSMSConfirmation(context.Context, *PhoneSMSSchema) (*TimeoutSchema, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendSMSConfirmation not implemented")
 }
-func (UnimplementedAuthServiceServer) LogOut(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+func (UnimplementedAuthServiceServer) LogOut(context.Context, *LogoutSchema) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LogOut not implemented")
 }
 func (UnimplementedAuthServiceServer) DeactivateAccount(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
@@ -664,7 +664,7 @@ func _AuthService_SendSMSConfirmation_Handler(srv interface{}, ctx context.Conte
 }
 
 func _AuthService_LogOut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(LogoutSchema)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -676,7 +676,7 @@ func _AuthService_LogOut_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: AuthService_LogOut_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).LogOut(ctx, req.(*emptypb.Empty))
+		return srv.(AuthServiceServer).LogOut(ctx, req.(*LogoutSchema))
 	}
 	return interceptor(ctx, in, info, handler)
 }
