@@ -66,8 +66,8 @@ type AuthServiceClient interface {
 	LogOut(ctx context.Context, in *LogoutSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeactivateAccount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteAccount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	GetUserById(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*User, error)
-	GetUserByEmail(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*User, error)
+	GetUserById(ctx context.Context, in *IdSchema, opts ...grpc.CallOption) (*User, error)
+	GetUserByEmail(ctx context.Context, in *IdSchema, opts ...grpc.CallOption) (*User, error)
 }
 
 type authServiceClient struct {
@@ -268,7 +268,7 @@ func (c *authServiceClient) DeleteAccount(ctx context.Context, in *emptypb.Empty
 	return out, nil
 }
 
-func (c *authServiceClient) GetUserById(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*User, error) {
+func (c *authServiceClient) GetUserById(ctx context.Context, in *IdSchema, opts ...grpc.CallOption) (*User, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(User)
 	err := c.cc.Invoke(ctx, AuthService_GetUserById_FullMethodName, in, out, cOpts...)
@@ -278,7 +278,7 @@ func (c *authServiceClient) GetUserById(ctx context.Context, in *emptypb.Empty, 
 	return out, nil
 }
 
-func (c *authServiceClient) GetUserByEmail(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*User, error) {
+func (c *authServiceClient) GetUserByEmail(ctx context.Context, in *IdSchema, opts ...grpc.CallOption) (*User, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(User)
 	err := c.cc.Invoke(ctx, AuthService_GetUserByEmail_FullMethodName, in, out, cOpts...)
@@ -311,8 +311,8 @@ type AuthServiceServer interface {
 	LogOut(context.Context, *LogoutSchema) (*emptypb.Empty, error)
 	DeactivateAccount(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	DeleteAccount(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
-	GetUserById(context.Context, *emptypb.Empty) (*User, error)
-	GetUserByEmail(context.Context, *emptypb.Empty) (*User, error)
+	GetUserById(context.Context, *IdSchema) (*User, error)
+	GetUserByEmail(context.Context, *IdSchema) (*User, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -380,10 +380,10 @@ func (UnimplementedAuthServiceServer) DeactivateAccount(context.Context, *emptyp
 func (UnimplementedAuthServiceServer) DeleteAccount(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAccount not implemented")
 }
-func (UnimplementedAuthServiceServer) GetUserById(context.Context, *emptypb.Empty) (*User, error) {
+func (UnimplementedAuthServiceServer) GetUserById(context.Context, *IdSchema) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
 }
-func (UnimplementedAuthServiceServer) GetUserByEmail(context.Context, *emptypb.Empty) (*User, error) {
+func (UnimplementedAuthServiceServer) GetUserByEmail(context.Context, *IdSchema) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByEmail not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
@@ -750,7 +750,7 @@ func _AuthService_DeleteAccount_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _AuthService_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(IdSchema)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -762,13 +762,13 @@ func _AuthService_GetUserById_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: AuthService_GetUserById_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).GetUserById(ctx, req.(*emptypb.Empty))
+		return srv.(AuthServiceServer).GetUserById(ctx, req.(*IdSchema))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AuthService_GetUserByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(IdSchema)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -780,7 +780,7 @@ func _AuthService_GetUserByEmail_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: AuthService_GetUserByEmail_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).GetUserByEmail(ctx, req.(*emptypb.Empty))
+		return srv.(AuthServiceServer).GetUserByEmail(ctx, req.(*IdSchema))
 	}
 	return interceptor(ctx, in, info, handler)
 }
