@@ -69,7 +69,7 @@ type AuthServiceClient interface {
 	DeleteAccount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetUserById(ctx context.Context, in *IdSchema, opts ...grpc.CallOption) (*User, error)
 	GetUserByEmail(ctx context.Context, in *IdSchema, opts ...grpc.CallOption) (*User, error)
-	HealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	HealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*MessageSchema, error)
 }
 
 type authServiceClient struct {
@@ -290,9 +290,9 @@ func (c *authServiceClient) GetUserByEmail(ctx context.Context, in *IdSchema, op
 	return out, nil
 }
 
-func (c *authServiceClient) HealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *authServiceClient) HealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*MessageSchema, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(MessageSchema)
 	err := c.cc.Invoke(ctx, AuthService_HealthCheck_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -325,7 +325,7 @@ type AuthServiceServer interface {
 	DeleteAccount(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	GetUserById(context.Context, *IdSchema) (*User, error)
 	GetUserByEmail(context.Context, *IdSchema) (*User, error)
-	HealthCheck(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
+	HealthCheck(context.Context, *emptypb.Empty) (*MessageSchema, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -399,7 +399,7 @@ func (UnimplementedAuthServiceServer) GetUserById(context.Context, *IdSchema) (*
 func (UnimplementedAuthServiceServer) GetUserByEmail(context.Context, *IdSchema) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByEmail not implemented")
 }
-func (UnimplementedAuthServiceServer) HealthCheck(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+func (UnimplementedAuthServiceServer) HealthCheck(context.Context, *emptypb.Empty) (*MessageSchema, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HealthCheck not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
