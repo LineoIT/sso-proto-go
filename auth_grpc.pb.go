@@ -41,6 +41,7 @@ const (
 	AuthService_DeleteAccount_FullMethodName         = "/sso.AuthService/DeleteAccount"
 	AuthService_GetUserById_FullMethodName           = "/sso.AuthService/GetUserById"
 	AuthService_GetUserByEmail_FullMethodName        = "/sso.AuthService/GetUserByEmail"
+	AuthService_HealthCheck_FullMethodName           = "/sso.AuthService/HealthCheck"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -68,6 +69,7 @@ type AuthServiceClient interface {
 	DeleteAccount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetUserById(ctx context.Context, in *IdSchema, opts ...grpc.CallOption) (*User, error)
 	GetUserByEmail(ctx context.Context, in *IdSchema, opts ...grpc.CallOption) (*User, error)
+	HealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type authServiceClient struct {
@@ -288,6 +290,16 @@ func (c *authServiceClient) GetUserByEmail(ctx context.Context, in *IdSchema, op
 	return out, nil
 }
 
+func (c *authServiceClient) HealthCheck(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AuthService_HealthCheck_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
@@ -313,6 +325,7 @@ type AuthServiceServer interface {
 	DeleteAccount(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	GetUserById(context.Context, *IdSchema) (*User, error)
 	GetUserByEmail(context.Context, *IdSchema) (*User, error)
+	HealthCheck(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -385,6 +398,9 @@ func (UnimplementedAuthServiceServer) GetUserById(context.Context, *IdSchema) (*
 }
 func (UnimplementedAuthServiceServer) GetUserByEmail(context.Context, *IdSchema) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByEmail not implemented")
+}
+func (UnimplementedAuthServiceServer) HealthCheck(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HealthCheck not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -785,6 +801,24 @@ func _AuthService_GetUserByEmail_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).HealthCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_HealthCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).HealthCheck(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -875,6 +909,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserByEmail",
 			Handler:    _AuthService_GetUserByEmail_Handler,
+		},
+		{
+			MethodName: "HealthCheck",
+			Handler:    _AuthService_HealthCheck_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
