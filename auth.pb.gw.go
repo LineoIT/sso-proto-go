@@ -320,7 +320,7 @@ func local_request_AuthService_SendEmailConfirmation_0(ctx context.Context, mars
 
 func request_AuthService_RegisterOrLoginPhone_0(ctx context.Context, marshaler runtime.Marshaler, client AuthServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq PhoneCodeSchema
+		protoReq PhoneRegisterSchema
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {
@@ -332,7 +332,7 @@ func request_AuthService_RegisterOrLoginPhone_0(ctx context.Context, marshaler r
 
 func local_request_AuthService_RegisterOrLoginPhone_0(ctx context.Context, marshaler runtime.Marshaler, server AuthServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var (
-		protoReq PhoneCodeSchema
+		protoReq PhoneRegisterSchema
 		metadata runtime.ServerMetadata
 	)
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && !errors.Is(err, io.EOF) {

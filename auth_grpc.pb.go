@@ -61,7 +61,7 @@ type AuthServiceClient interface {
 	ConfirmEmail(ctx context.Context, in *EmailCodeSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	EmailLogin(ctx context.Context, in *EmailPasswordSchema, opts ...grpc.CallOption) (*AccessToken, error)
 	SendEmailConfirmation(ctx context.Context, in *EmailMailSchema, opts ...grpc.CallOption) (*TimeoutSchema, error)
-	RegisterOrLoginPhone(ctx context.Context, in *PhoneCodeSchema, opts ...grpc.CallOption) (*AccessToken, error)
+	RegisterOrLoginPhone(ctx context.Context, in *PhoneRegisterSchema, opts ...grpc.CallOption) (*AccessToken, error)
 	CheckPhoneNumber(ctx context.Context, in *PhoneSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ConfirmPhoneNumber(ctx context.Context, in *PhoneCodeSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	SendSMSConfirmation(ctx context.Context, in *PhoneSMSSchema, opts ...grpc.CallOption) (*TimeoutSchema, error)
@@ -202,7 +202,7 @@ func (c *authServiceClient) SendEmailConfirmation(ctx context.Context, in *Email
 	return out, nil
 }
 
-func (c *authServiceClient) RegisterOrLoginPhone(ctx context.Context, in *PhoneCodeSchema, opts ...grpc.CallOption) (*AccessToken, error) {
+func (c *authServiceClient) RegisterOrLoginPhone(ctx context.Context, in *PhoneRegisterSchema, opts ...grpc.CallOption) (*AccessToken, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AccessToken)
 	err := c.cc.Invoke(ctx, AuthService_RegisterOrLoginPhone_FullMethodName, in, out, cOpts...)
@@ -328,7 +328,7 @@ type AuthServiceServer interface {
 	ConfirmEmail(context.Context, *EmailCodeSchema) (*emptypb.Empty, error)
 	EmailLogin(context.Context, *EmailPasswordSchema) (*AccessToken, error)
 	SendEmailConfirmation(context.Context, *EmailMailSchema) (*TimeoutSchema, error)
-	RegisterOrLoginPhone(context.Context, *PhoneCodeSchema) (*AccessToken, error)
+	RegisterOrLoginPhone(context.Context, *PhoneRegisterSchema) (*AccessToken, error)
 	CheckPhoneNumber(context.Context, *PhoneSchema) (*emptypb.Empty, error)
 	ConfirmPhoneNumber(context.Context, *PhoneCodeSchema) (*emptypb.Empty, error)
 	SendSMSConfirmation(context.Context, *PhoneSMSSchema) (*TimeoutSchema, error)
@@ -385,7 +385,7 @@ func (UnimplementedAuthServiceServer) EmailLogin(context.Context, *EmailPassword
 func (UnimplementedAuthServiceServer) SendEmailConfirmation(context.Context, *EmailMailSchema) (*TimeoutSchema, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendEmailConfirmation not implemented")
 }
-func (UnimplementedAuthServiceServer) RegisterOrLoginPhone(context.Context, *PhoneCodeSchema) (*AccessToken, error) {
+func (UnimplementedAuthServiceServer) RegisterOrLoginPhone(context.Context, *PhoneRegisterSchema) (*AccessToken, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterOrLoginPhone not implemented")
 }
 func (UnimplementedAuthServiceServer) CheckPhoneNumber(context.Context, *PhoneSchema) (*emptypb.Empty, error) {
@@ -656,7 +656,7 @@ func _AuthService_SendEmailConfirmation_Handler(srv interface{}, ctx context.Con
 }
 
 func _AuthService_RegisterOrLoginPhone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PhoneCodeSchema)
+	in := new(PhoneRegisterSchema)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -668,7 +668,7 @@ func _AuthService_RegisterOrLoginPhone_Handler(srv interface{}, ctx context.Cont
 		FullMethod: AuthService_RegisterOrLoginPhone_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).RegisterOrLoginPhone(ctx, req.(*PhoneCodeSchema))
+		return srv.(AuthServiceServer).RegisterOrLoginPhone(ctx, req.(*PhoneRegisterSchema))
 	}
 	return interceptor(ctx, in, info, handler)
 }
