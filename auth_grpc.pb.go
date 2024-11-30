@@ -63,7 +63,7 @@ type AuthServiceClient interface {
 	SendEmailConfirmation(ctx context.Context, in *EmailMailSchema, opts ...grpc.CallOption) (*TimeoutSchema, error)
 	RegisterOrLoginPhone(ctx context.Context, in *PhoneRegisterSchema, opts ...grpc.CallOption) (*AccessToken, error)
 	CheckPhoneNumber(ctx context.Context, in *PhoneSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	ConfirmPhoneNumber(ctx context.Context, in *PhoneCodeSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	ConfirmPhoneNumber(ctx context.Context, in *PhoneCodeSchema, opts ...grpc.CallOption) (*AccessToken, error)
 	SendSMSConfirmation(ctx context.Context, in *PhoneSMSSchema, opts ...grpc.CallOption) (*TimeoutSchema, error)
 	LogOut(ctx context.Context, in *LogoutSchema, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeactivateAccount(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -222,9 +222,9 @@ func (c *authServiceClient) CheckPhoneNumber(ctx context.Context, in *PhoneSchem
 	return out, nil
 }
 
-func (c *authServiceClient) ConfirmPhoneNumber(ctx context.Context, in *PhoneCodeSchema, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *authServiceClient) ConfirmPhoneNumber(ctx context.Context, in *PhoneCodeSchema, opts ...grpc.CallOption) (*AccessToken, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(AccessToken)
 	err := c.cc.Invoke(ctx, AuthService_ConfirmPhoneNumber_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -330,7 +330,7 @@ type AuthServiceServer interface {
 	SendEmailConfirmation(context.Context, *EmailMailSchema) (*TimeoutSchema, error)
 	RegisterOrLoginPhone(context.Context, *PhoneRegisterSchema) (*AccessToken, error)
 	CheckPhoneNumber(context.Context, *PhoneSchema) (*emptypb.Empty, error)
-	ConfirmPhoneNumber(context.Context, *PhoneCodeSchema) (*emptypb.Empty, error)
+	ConfirmPhoneNumber(context.Context, *PhoneCodeSchema) (*AccessToken, error)
 	SendSMSConfirmation(context.Context, *PhoneSMSSchema) (*TimeoutSchema, error)
 	LogOut(context.Context, *LogoutSchema) (*emptypb.Empty, error)
 	DeactivateAccount(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
@@ -391,7 +391,7 @@ func (UnimplementedAuthServiceServer) RegisterOrLoginPhone(context.Context, *Pho
 func (UnimplementedAuthServiceServer) CheckPhoneNumber(context.Context, *PhoneSchema) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckPhoneNumber not implemented")
 }
-func (UnimplementedAuthServiceServer) ConfirmPhoneNumber(context.Context, *PhoneCodeSchema) (*emptypb.Empty, error) {
+func (UnimplementedAuthServiceServer) ConfirmPhoneNumber(context.Context, *PhoneCodeSchema) (*AccessToken, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConfirmPhoneNumber not implemented")
 }
 func (UnimplementedAuthServiceServer) SendSMSConfirmation(context.Context, *PhoneSMSSchema) (*TimeoutSchema, error) {
